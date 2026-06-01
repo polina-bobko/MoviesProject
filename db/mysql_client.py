@@ -12,10 +12,10 @@ from db.sql_queries import (
 
 def get_connection() -> pymysql.connections.Connection:
     """
-    Создаёт и возвращает соединение с базой данных MySQL.
+    Creates and returns a MySQL database connection.
 
-    :raises DBConnectionError: если подключение не удалось.
-    :return: объект соединения pymysql с DictCursor по умолчанию.
+    :raises DBConnectionError: if the connection attempt fails.
+    :return: pymysql connection object with DictCursor as default cursor.
     """
     try:
         conn = pymysql.connect(
@@ -28,36 +28,37 @@ def get_connection() -> pymysql.connections.Connection:
         )
         return conn
     except pymysql.Error as e:
-        raise DBConnectionError(f'Не удалось подключиться к MySQL: {e}')
+        raise DBConnectionError(f'Failed to connect to MySQL: {e}')
 
 
 def fetch_films_by_title(keyword: str, limit: int, offset: int) -> list[dict]:
     """
-    Ищет фильмы по ключевому слову в названии.
+    Searches for films by keyword in the title and description fields.
 
-    :param keyword: строка поиска (ищется вхождение в title без учёта регистра).
-    :param limit: максимальное количество возвращаемых записей.
-    :param offset: смещение для пагинации.
-    :raises QueryError: если запрос к базе завершился ошибкой.
-    :return: список словарей с полями film_id, title, description.
+    :param keyword: search string (case-insensitive substring match against title and description).
+    :param limit: maximum number of records to return.
+    :param offset: pagination offset.
+    :raises QueryError: if the database query fails.
+    :return: list of dicts with fields film_id, title, description.
     """
     conn = get_connection()
     try:
         with conn.cursor() as cursor:
-            cursor.execute(SELECT_FILMS_BY_TITLE_QUERY, (f'%{keyword}%', limit, offset))
+            pattern = f'%{keyword}%'
+            cursor.execute(SELECT_FILMS_BY_TITLE_QUERY, (pattern, pattern, limit, offset))
             return cursor.fetchall()
     except pymysql.Error as e:
-        raise QueryError(f'Ошибка запроса фильмов по названию: {e}')
+        raise QueryError(f'Error querying films by title: {e}')
     finally:
         conn.close()
 
 
 def fetch_all_genres() -> list[dict]:
     """
-    Возвращает все жанры из таблицы category, отсортированные по названию.
+    Returns all genres from the category table, sorted by name.
 
-    :raises QueryError: если запрос к базе завершился ошибкой.
-    :return: список словарей с полями category_id, name.
+    :raises QueryError: if the database query fails.
+    :return: list of dicts with fields category_id, name.
     """
     conn = get_connection()
     try:
@@ -65,17 +66,17 @@ def fetch_all_genres() -> list[dict]:
             cursor.execute(SELECT_ALL_GENRES_QUERY)
             return cursor.fetchall()
     except pymysql.Error as e:
-        raise QueryError(f'Ошибка запроса жанров: {e}')
+        raise QueryError(f'Error querying genres: {e}')
     finally:
         conn.close()
 
 
 def fetch_year_range() -> dict:
     """
-    Возвращает минимальный и максимальный год выпуска фильмов в базе.
+    Returns the minimum and maximum release years of films in the database.
 
-    :raises QueryError: если запрос к базе завершился ошибкой.
-    :return: словарь с полями min_year и max_year.
+    :raises QueryError: if the database query fails.
+    :return: dict with fields min_year and max_year.
     """
     conn = get_connection()
     try:
@@ -83,7 +84,7 @@ def fetch_year_range() -> dict:
             cursor.execute(SELECT_FILM_YEAR_RANGE_QUERY)
             return cursor.fetchone()
     except pymysql.Error as e:
-        raise QueryError(f'Ошибка запроса диапазона годов: {e}')
+        raise QueryError(f'Error querying year range: {e}')
     finally:
         conn.close()
 
@@ -96,15 +97,15 @@ def fetch_films_by_genre_and_year(
     offset: int,
 ) -> list[dict]:
     """
-    Ищет фильмы по жанру и диапазону годов выпуска.
+    Searches for films by genre and release year range.
 
-    :param category_id: идентификатор жанра из таблицы category.
-    :param year_from: нижняя граница диапазона годов (включительно).
-    :param year_to: верхняя граница диапазона годов (включительно).
-    :param limit: максимальное количество возвращаемых записей.
-    :param offset: смещение для пагинации.
-    :raises QueryError: если запрос к базе завершился ошибкой.
-    :return: список словарей с полями film_id, title, release_year, description.
+    :param category_id: genre identifier from the category table.
+    :param year_from: lower bound of the year range (inclusive).
+    :param year_to: upper bound of the year range (inclusive).
+    :param limit: maximum number of records to return.
+    :param offset: pagination offset.
+    :raises QueryError: if the database query fails.
+    :return: list of dicts with fields film_id, title, release_year, description.
     """
     conn = get_connection()
     try:
@@ -115,6 +116,6 @@ def fetch_films_by_genre_and_year(
             )
             return cursor.fetchall()
     except pymysql.Error as e:
-        raise QueryError(f'Ошибка запроса фильмов по жанру и году: {e}')
+        raise QueryError(f'Error querying films by genre and year: {e}')
     finally:
         conn.close()

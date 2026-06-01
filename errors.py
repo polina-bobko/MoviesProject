@@ -1,13 +1,13 @@
 class DBConnectionError(Exception):
-    """Ошибка подключения к базе данных"""
+    """Raised when a MySQL database connection cannot be established."""
     pass
 
 
 class MongoConnectionError(Exception):
-    """Ошибка подключения к MongoDB"""
+    """Raised when a MongoDB connection cannot be established."""
     pass
 
 
 class QueryError(Exception):
-    """Ошибка выполнения запроса"""
+    """Raised when a database query fails."""
     pass

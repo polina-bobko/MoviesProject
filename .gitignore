@@ -3,8 +3,8 @@
 env/
 venv/
 .idea/*
+.idea/
 __pycache__/
 db/__pycache__/
 
-settings.py
 app.log

@@ -2,6 +2,7 @@ SELECT_FILMS_BY_TITLE_QUERY = """
     SELECT film_id, title, description
     FROM film
     WHERE LOWER(title) LIKE LOWER(%s)
+    OR LOWER(description) LIKE LOWER(%s)
     ORDER BY title
     LIMIT %s OFFSET %s;
 """
