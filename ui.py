@@ -47,7 +47,7 @@ def ask_for_next_page() -> bool:
 @logger.logger_decorator
 def handle_search_movies_by_keyword() -> None:
     """
-    Handles film search by keyword in the title.
+    Handles film search by keyword in the title or description.
     Prompts the user for a string, displays results page by page
     in batches of PAGE_SIZE, and saves the query to MongoDB.
 
@@ -247,7 +247,7 @@ menu_config = {
         },
         '0': {
             'text': 'Exit',
-            'action': lambda: sys.exit(0),
+            'action': lambda: (print('\nThank you for using Movies Search CLI. Have a great day!'), sys.exit(0)),
         },
     },
 }
