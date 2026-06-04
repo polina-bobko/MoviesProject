@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from pymongo import MongoClient
 import settings
 from errors import MongoConnectionError
@@ -34,7 +34,7 @@ def save_query(query_type: str, params: dict) -> None:
             document = {
                 'type': query_type,
                 'params': params,
-                'created_at': datetime.now(timezone.utc),
+                'created_at': datetime.now(),
             }
             collection.insert_one(document)
             logger.info(f'Query saved to MongoDB: {query_type}')

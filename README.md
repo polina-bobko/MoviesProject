@@ -145,4 +145,4 @@ All application events and errors are written to `app.log` in the project root.
 ## Notes
 
 - The `.env` file is listed in `.gitignore` and will not be committed to version control.
-- The Sakila database contains films from **2006** only — this is expected for this demo dataset.
+- The Sakila database contains films from **1990** only — this is expected for this demo dataset.

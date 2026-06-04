@@ -10,7 +10,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 def logger_decorator(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
